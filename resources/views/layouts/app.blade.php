@@ -7,56 +7,43 @@
 
     <title>{{ config('app.name', 'EduFlex') }}</title>
 
-    <!-- Styles -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Дополнительные стили для исправления z-index -->
+    <style>
+        /* Только для выпадающих меню повышаем z-index */
+        .absolute[x-show],
+        .fixed[x-show] {
+            z-index: 200 !important;
+        }
+
+        /* Для главного баннера на домашней странице */
+        .welcome-banner {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Для хедера, чтобы был выше баннера */
+        header.sticky, nav.sticky {
+            position: sticky;
+            z-index: 100;
+        }
+    </style>
 </head>
 <body class="font-sans antialiased bg-gray-100">
     <div id="app">
-        <nav class="bg-white shadow-sm">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex">
-                        <div class="flex-shrink-0 flex items-center">
-                            <a href="{{ url('/') }}" class="text-xl font-bold text-blue-600">
-                                {{ config('app.name', 'EduFlex') }}
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center">
-                        @guest
-                            <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Вход</a>
-                            <a href="{{ route('register') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Регистрация</a>
-                        @else
-                            <div class="relative" x-data="{ open: false }">
-                                <button @click="open = !open" class="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 focus:outline-none transition duration-150 ease-in-out">
-                                    <span>{{ Auth::user()->name }}</span>
-                                    <svg class="ml-1 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </button>
-
-                                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                    <div class="py-1">
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Профиль</a>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                Выйти
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        @endguest
-                    </div>
-                </div>
-            </div>
-        </nav>
+        @include('components.header')
 
         <main>
             @yield('content')
         </main>
+
+        @include('components.footer')
     </div>
 
     <!-- Alpine.js -->

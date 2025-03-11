@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
             <div class="flex items-center">
-                <a href="{{ route('home') }}" class="text-blue-600 font-bold text-xl flex items-center">
+                <a href="{{ auth()->check() ? route('home') : route('welcome') }}" class="text-blue-600 font-bold text-xl flex items-center">
                     <img src="{{ asset('img/icons/book.svg') }}" alt="Logo" class="h-8 w-8 mr-2">
                     EduFlex
                 </a>
@@ -11,7 +11,7 @@
 
             <!-- Navigation -->
             <nav class="hidden md:flex items-center space-x-1" x-data="{ open: false }">
-                <a href="{{ route('home') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Главная</a>
+                <a href="{{ auth()->check() ? route('home') : route('welcome') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Главная</a>
                 <a href="{{ route('courses.index') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Курсы</a>
                 <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Преподаватели</a>
                 <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Блог</a>
@@ -41,13 +41,23 @@
                             <img src="{{ asset('img/icons/chevron-down.svg') }}" alt="Dropdown" class="h-5 w-5 ml-1">
                         </button>
 
-                        <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                            <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Мой профиль</a>
-                            <a href="{{ route('profile.courses') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Мои курсы</a>
+                        <div x-show="open"
+                             @click.away="open = false"
+                             x-transition
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl py-1"
+                             style="display: none; z-index: 200;">
+                            <a href="{{ route('profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Мой профиль
+                            </a>
+                            <a href="{{ route('student.courses') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Мои курсы
+                            </a>
                             <div class="border-t border-gray-100"></div>
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
-                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Выйти</button>
+                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Выйти
+                                </button>
                             </form>
                         </div>
                     @endguest
@@ -61,7 +71,11 @@
                     </button>
 
                     <!-- Mobile Menu -->
-                    <div x-show="open" @click.away="open = false" x-transition class="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 flex items-center justify-center">
+                    <div x-show="open"
+                         @click.away="open = false"
+                         x-transition
+                         class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center"
+                         style="display: none; z-index: 200;">
                         <div class="bg-white w-4/5 max-w-sm rounded-lg p-4">
                             <div class="flex justify-between items-center mb-4">
                                 <h3 class="text-lg font-medium">Меню</h3>
@@ -71,7 +85,7 @@
                             </div>
 
                             <div class="space-y-2">
-                                <a href="{{ route('home') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Главная</a>
+                                <a href="{{ auth()->check() ? route('home') : route('welcome') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Главная</a>
                                 <a href="{{ route('courses.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Курсы</a>
                                 <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Преподаватели</a>
                                 <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Блог</a>
@@ -83,8 +97,8 @@
                                     <a href="{{ route('login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Войти</a>
                                     <a href="{{ route('register') }}" class="block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-center">Регистрация</a>
                                 @else
-                                    <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Мой профиль</a>
-                                    <a href="{{ route('profile.courses') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Мои курсы</a>
+                                    <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Мой профиль</a>
+                                    <a href="{{ route('student.courses') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Мои курсы</a>
                                     <form action="{{ route('logout') }}" method="POST">
                                         @csrf
                                         <button type="submit" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Выйти</button>

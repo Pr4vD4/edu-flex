@@ -22,10 +22,15 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-// Главная страница
+// Главная страница для гостей
 Route::get('/', function () {
     return view('welcome');
-})->name('home');
+})->name('welcome');
+
+// Главная страница для авторизованных пользователей
+Route::get('/home', [HomeController::class, 'index'])
+    ->name('home')
+    ->middleware('auth');
 
 // Маршруты для курсов
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
