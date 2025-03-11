@@ -14,7 +14,6 @@ class Lesson extends Model
         'description',
         'content',
         'course_id',
-        'module_id',
         'position',
         'is_published',
         'duration_minutes',
@@ -32,14 +31,6 @@ class Lesson extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
-    }
-
-    /**
-     * Модуль, к которому принадлежит урок (если есть)
-     */
-    public function module()
-    {
-        return $this->belongsTo(Module::class);
     }
 
     /**

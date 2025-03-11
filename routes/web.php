@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LessonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,11 +69,26 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     })->name('dashboard');
 
     // Маршруты управления курсами преподавателя
-    Route::get('/courses', [CourseController::class, 'teacherCourses'])->name('courses');
+    Route::get('/courses', [CourseController::class, 'teacherCourses'])->name('courses.index');
     Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
     Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
+    Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
     Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
     Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
+    Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+    Route::post('/courses/{course}/publish', [CourseController::class, 'publish'])->name('courses.publish');
+    Route::post('/courses/{course}/unpublish', [CourseController::class, 'unpublish'])->name('courses.unpublish');
+
+    // Маршруты для управления уроками курса
+    Route::get('/courses/{course}/lessons', [LessonController::class, 'index'])->name('courses.lessons.index');
+    Route::get('/courses/{course}/lessons/create', [LessonController::class, 'create'])->name('courses.lessons.create');
+    Route::post('/courses/{course}/lessons', [LessonController::class, 'store'])->name('courses.lessons.store');
+    Route::get('/courses/{course}/lessons/{lesson}', [LessonController::class, 'show'])->name('courses.lessons.show');
+    Route::get('/courses/{course}/lessons/{lesson}/edit', [LessonController::class, 'edit'])->name('courses.lessons.edit');
+    Route::put('/courses/{course}/lessons/{lesson}', [LessonController::class, 'update'])->name('courses.lessons.update');
+    Route::delete('/courses/{course}/lessons/{lesson}', [LessonController::class, 'destroy'])->name('courses.lessons.destroy');
+    Route::post('/courses/{course}/lessons/{lesson}/move', [LessonController::class, 'move'])->name('courses.lessons.move');
+    Route::delete('/courses/{course}/lessons/{lesson}/attachments/{attachment}', [LessonController::class, 'deleteAttachment'])->name('courses.lessons.attachments.destroy');
 
     // Маршруты для управления студентами курсов
     Route::get('/courses/{course}/students', [CourseController::class, 'students'])->name('courses.students');

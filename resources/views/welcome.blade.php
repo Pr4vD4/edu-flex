@@ -13,11 +13,11 @@
                     Учитесь у лучших преподавателей, получайте востребованные навыки, меняйте свою карьеру.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                    <a href="{{ route('courses.index') }}" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 shadow-md transition duration-150">
-                        Найти курсы
-                    </a>
-                    <a href="{{ route('register') }}" class="inline-flex justify-center items-center px-6 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-blue-700 transition duration-150">
+                    <a href="{{ route('register') }}" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 shadow-md transition duration-150">
                         Начать обучение
+                    </a>
+                    <a href="#popular-courses" class="inline-flex justify-center items-center px-6 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-blue-700 transition duration-150">
+                        Популярные курсы
                     </a>
                 </div>
             </div>
@@ -32,7 +32,7 @@
 </div>
 
 <!-- Преимущества платформы -->
-<div class="py-12 bg-white">
+<div id="benefits" class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -96,7 +96,7 @@
 </div>
 
 <!-- Популярные курсы -->
-<div class="py-12 bg-gray-50">
+<div id="popular-courses" class="py-12 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold text-gray-900">Популярные курсы</h2>
@@ -138,35 +138,47 @@
     </div>
 </div>
 
-<!-- Новые курсы -->
+<!-- Как это работает -->
 <div class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-900">Новые курсы</h2>
-            <a href="{{ route('courses.index') }}" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
-                Все курсы
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                </svg>
-            </a>
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                Как работает EduFlex
+            </h2>
+            <p class="mt-3 max-w-2xl mx-auto text-lg text-gray-500">
+                Простые шаги для начала обучения на нашей платформе
+            </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Заглушки для новых курсов -->
-            @for ($i = 1; $i <= 4; $i++)
-            <div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 border border-gray-200">
-                <div class="aspect-w-16 aspect-h-9 bg-gray-300">
-                    <div class="w-full h-40 bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center text-white font-bold">
-                        Новый курс {{ $i }}
-                    </div>
+        <div class="relative">
+            <!-- Линия соединения -->
+            <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-blue-100 transform -translate-y-1/2 z-0"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mb-4">1</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Регистрация</h3>
+                    <p class="text-gray-600">Создайте учетную запись на платформе всего за минуту</p>
                 </div>
-                <div class="p-4">
-                    <h3 class="text-lg font-bold text-gray-900 mb-1">Новый курс {{ $i }}</h3>
-                    <p class="text-gray-600 text-sm mb-3">Открывайте новые возможности с нашими курсами.</p>
-                    <a href="#" class="inline-block px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition">Подробнее</a>
+
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mb-4">2</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Выбор курса</h3>
+                    <p class="text-gray-600">Выберите интересующий вас курс из нашего каталога</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mb-4">3</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Обучение</h3>
+                    <p class="text-gray-600">Проходите уроки, выполняйте задания, участвуйте в дискуссиях</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+                    <div class="bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mb-4">4</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Сертификат</h3>
+                    <p class="text-gray-600">Получите сертификат о прохождении курса после завершения</p>
                 </div>
             </div>
-            @endfor
         </div>
     </div>
 </div>

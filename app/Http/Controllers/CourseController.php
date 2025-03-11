@@ -101,6 +101,25 @@ class CourseController extends Controller
     }
 
     /**
+     * Показывает детальную информацию о курсе для преподавателя
+     */
+    public function show(Course $course)
+    {
+        // Проверка, что курс принадлежит преподавателю
+        if ($course->teacher_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Получаем все уроки курса
+        $lessons = $course->lessons()->orderBy('position')->get();
+
+        return view('teacher.courses.show', [
+            'course' => $course,
+            'lessons' => $lessons
+        ]);
+    }
+
+    /**
      * Показывает форму создания нового курса
      */
     public function create()
@@ -168,12 +187,14 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'price' => 'required|numeric|min:0',
             'is_published' => 'boolean',
         ]);
 
         $course->title = $request->title;
         $course->description = $request->description;
         $course->is_published = $request->has('is_published');
+        $course->price = $request->price;
 
         // Обработка изображения (если загружено)
         if ($request->hasFile('image')) {
@@ -190,7 +211,68 @@ class CourseController extends Controller
 
         $course->save();
 
-        return redirect()->route('teacher.courses')->with('status', 'Курс успешно обновлен!');
+        return redirect()->route('teacher.courses.show', $course)->with('status', 'Курс успешно обновлен!');
+    }
+
+    /**
+     * Удаляет курс
+     */
+    public function destroy(Course $course)
+    {
+        // Проверка, что курс принадлежит преподавателю
+        if ($course->teacher_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Удаляем изображение курса
+        if ($course->image && file_exists(public_path($course->image))) {
+            unlink(public_path($course->image));
+        }
+
+        // Удаляем курс (каскадное удаление уроков настроено в миграциях)
+        $course->delete();
+
+        return redirect()->route('teacher.courses.index')->with('status', 'Курс успешно удален!');
+    }
+
+    /**
+     * Публикует курс
+     */
+    public function publish(Course $course)
+    {
+        // Проверка, что курс принадлежит преподавателю
+        if ($course->teacher_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Проверяем, что у курса есть хотя бы один урок
+        if ($course->lessons()->count() === 0) {
+            return redirect()->route('teacher.courses.show', $course)
+                ->with('error', 'Для публикации курса необходимо добавить хотя бы один урок.');
+        }
+
+        $course->is_published = true;
+        $course->save();
+
+        return redirect()->route('teacher.courses.show', $course)
+            ->with('status', 'Курс успешно опубликован!');
+    }
+
+    /**
+     * Снимает курс с публикации
+     */
+    public function unpublish(Course $course)
+    {
+        // Проверка, что курс принадлежит преподавателю
+        if ($course->teacher_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $course->is_published = false;
+        $course->save();
+
+        return redirect()->route('teacher.courses.show', $course)
+            ->with('status', 'Курс снят с публикации.');
     }
 
     /**

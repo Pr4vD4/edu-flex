@@ -17,7 +17,7 @@
                             </div>
                             <div>
                                 <div class="text-xl font-semibold">Мои курсы</div>
-                                <div class="text-3xl font-bold">0</div>
+                                <div class="text-3xl font-bold">{{ Auth::user()->teacherCourses->count() }}</div>
                             </div>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                             </div>
                             <div>
                                 <div class="text-xl font-semibold">Студенты</div>
-                                <div class="text-3xl font-bold">0</div>
+                                <div class="text-3xl font-bold">{{ Auth::user()->teacherCourses->flatMap->students->unique('id')->count() }}</div>
                             </div>
                         </div>
                     </div>
@@ -44,36 +44,145 @@
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-xl font-semibold">Тесты</div>
-                                <div class="text-3xl font-bold">0</div>
+                                <div class="text-xl font-semibold">Уроки</div>
+                                <div class="text-3xl font-bold">{{ Auth::user()->teacherCourses->flatMap->lessons->count() }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-8">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Мои курсы</h2>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800">Мои курсы</h2>
+                        <a href="{{ route('teacher.courses.index') }}" class="text-blue-600 hover:underline text-sm">
+                            Просмотреть все
+                        </a>
+                    </div>
+
                     <div class="bg-white overflow-hidden border border-gray-200 sm:rounded-lg">
-                        <div class="px-4 py-8 text-center text-gray-500">
-                            У вас пока нет созданных курсов. Начните с создания вашего первого курса!
-                        </div>
-                        <div class="px-4 py-4 border-t border-gray-200 flex justify-center">
-                            <a href="#" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                                </svg>
-                                Создать курс
-                            </a>
-                        </div>
+                        @if(Auth::user()->teacherCourses->isEmpty())
+                            <div class="px-4 py-8 text-center text-gray-500">
+                                У вас пока нет созданных курсов. Начните с создания вашего первого курса!
+                            </div>
+                            <div class="px-4 py-4 border-t border-gray-200 flex justify-center">
+                                <a href="{{ route('teacher.courses.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                                    </svg>
+                                    Создать курс
+                                </a>
+                            </div>
+                        @else
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Название
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Статус
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Уроки
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Студенты
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Действия
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach(Auth::user()->teacherCourses->take(5) as $course)
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm font-medium text-gray-900">{{ $course->title }}</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <span class="px-2 py-1 text-xs rounded-full {{ $course->is_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                        {{ $course->is_published ? 'Опубликован' : 'Черновик' }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ $course->lessons->count() }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ $course->students->count() }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <div class="flex space-x-2">
+                                                        <a href="{{ route('teacher.courses.edit', $course) }}" class="text-blue-600 hover:text-blue-800">
+                                                            Редактировать
+                                                        </a>
+                                                        <a href="{{ route('teacher.courses.lessons.index', $course) }}" class="text-blue-600 hover:text-blue-800">
+                                                            Уроки
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
                 <div>
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Последняя активность</h2>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800">Последние студенты</h2>
+                    </div>
+
                     <div class="bg-white overflow-hidden border border-gray-200 sm:rounded-lg">
-                        <div class="px-4 py-8 text-center text-gray-500">
-                            Пока нет активности для отображения.
-                        </div>
+                        @php
+                            $recentEnrollments = \App\Models\Enrollment::whereIn('course_id', Auth::user()->teacherCourses->pluck('id'))
+                                ->with(['student', 'course'])
+                                ->latest()
+                                ->take(5)
+                                ->get();
+                        @endphp
+
+                        @if($recentEnrollments->isEmpty())
+                            <div class="px-4 py-8 text-center text-gray-500">
+                                Пока нет студентов, записанных на ваши курсы.
+                            </div>
+                        @else
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Студент
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Курс
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Дата записи
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach($recentEnrollments as $enrollment)
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm font-medium text-gray-900">{{ $enrollment->student->name }}</div>
+                                                    <div class="text-sm text-gray-500">{{ $enrollment->student->email }}</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm text-gray-900">{{ $enrollment->course->title }}</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ $enrollment->created_at->format('d.m.Y H:i') }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
