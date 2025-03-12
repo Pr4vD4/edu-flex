@@ -28,30 +28,41 @@
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($courses as $course)
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg hover:shadow-md transition cursor-pointer"
+                         onclick="window.location='{{ route('teacher.courses.show', $course) }}'">
                         <div class="relative">
-                            @if ($course->image)
-                                <img src="{{ asset($course->image) }}" alt="{{ $course->title }}" class="w-full h-40 object-cover">
-                            @else
-                                <div class="w-full h-40 bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-500">Нет изображения</span>
-                                </div>
-                            @endif
+                            <div>
+                                @if ($course->image)
+                                    <img src="{{ asset($course->image) }}" alt="{{ $course->title }}" class="w-full h-40 object-cover">
+                                @else
+                                    <div class="w-full h-40 bg-gray-200 flex items-center justify-center">
+                                        <span class="text-gray-500">Нет изображения</span>
+                                    </div>
+                                @endif
+                            </div>
 
                             <div class="absolute top-2 right-2">
-                                <span class="px-2 py-1 text-xs rounded-full {{ $course->is_published ? 'bg-green-500 text-white' : 'bg-yellow-500 text-white' }}">
-                                    {{ $course->is_published ? 'Опубликован' : 'Черновик' }}
+                                <span class="px-2 py-1 text-xs rounded-full {{ $course->status === 'published' ? 'bg-green-500 text-white' : ($course->status === 'archived' ? 'bg-gray-500 text-white' : 'bg-yellow-500 text-white') }}">
+                                    {{ $course->status === 'published' ? 'Опубликован' : ($course->status === 'archived' ? 'В архиве' : 'Черновик') }}
                                 </span>
                             </div>
                         </div>
 
                         <div class="p-4">
-                            <h3 class="text-lg font-semibold mb-2">{{ $course->title }}</h3>
+                            <h3 class="text-lg font-semibold mb-2">
+                                <a href="{{ route('teacher.courses.show', $course) }}" class="hover:text-blue-600 transition">
+                                    {{ $course->title }}
+                                </a>
+                            </h3>
                             <p class="text-gray-600 text-sm mb-4 h-12 overflow-hidden">
                                 {{ Str::limit($course->description, 100) }}
                             </p>
 
                             <div class="border-t pt-4 flex flex-wrap gap-2">
+                                <a href="{{ route('teacher.courses.show', $course) }}" class="text-blue-600 hover:underline text-sm">
+                                    Просмотреть
+                                </a>
+                                <span class="text-gray-300">|</span>
                                 <a href="{{ route('teacher.courses.edit', $course) }}" class="text-blue-600 hover:underline text-sm">
                                     Редактировать
                                 </a>

@@ -53,13 +53,14 @@ class HomeController extends Controller
         if ($user->role === 'teacher') {
             $userData['myCourses'] = Course::where('teacher_id', $user->id)
                 ->with('category') // Загружаем связанную категорию
+                ->take(6)
                 ->get();
             // Используем запрос для подсчета студентов всех курсов преподавателя
             $userData['totalStudents'] = Course::where('teacher_id', $user->id)->sum('students_count');
         } elseif ($user->role === 'student') {
             // Используем eager loading для загрузки связанных данных
-            $userData['enrolledCourses'] = $user->enrolledCourses()->with(['teacher', 'category'])->get();
-            $userData['completedCourses'] = $user->enrolledCourses()->wherePivot('status', 'completed')->get();
+            $userData['enrolledCourses'] = $user->enrolledCourses()->with(['teacher', 'category'])->take(6)->get();
+            $userData['completedCourses'] = $user->enrolledCourses()->wherePivot('status', 'completed')->take(6)->get();
         }
 
         return view('home', compact(

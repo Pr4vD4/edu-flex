@@ -240,6 +240,41 @@ class LessonController extends Controller
     }
 
     /**
+     * Отображает детальную информацию об уроке
+     */
+    public function show(Course $course, Lesson $lesson)
+    {
+        // Проверка, что урок принадлежит курсу
+        if ($lesson->course_id !== $course->id) {
+            abort(404);
+        }
+
+        // Проверка, что курс принадлежит текущему преподавателю
+        if ($course->teacher_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Загружаем прикрепленные файлы
+        $lesson->load('attachments');
+
+        // Находим предыдущий и следующий уроки
+        $lessons = $course->lessons()->orderBy('position')->get();
+        $currentIndex = $lessons->search(function($item) use ($lesson) {
+            return $item->id === $lesson->id;
+        });
+
+        $prevLesson = ($currentIndex > 0) ? $lessons[$currentIndex - 1] : null;
+        $nextLesson = ($currentIndex < $lessons->count() - 1) ? $lessons[$currentIndex + 1] : null;
+
+        return view('teacher.lessons.show', [
+            'course' => $course,
+            'lesson' => $lesson,
+            'prevLesson' => $prevLesson,
+            'nextLesson' => $nextLesson
+        ]);
+    }
+
+    /**
      * Изменяет позицию урока (вверх или вниз)
      */
     public function move(Request $request, Course $course, Lesson $lesson)
