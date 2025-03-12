@@ -82,15 +82,43 @@ class CourseController extends Controller
     /**
      * Показывает страницу для прохождения курса студентом
      */
-    public function studyCourse(Course $course)
+    public function studyCourse(Course $course, Request $request)
     {
         // Проверка, что студент записан на курс
         if (!Auth::user()->enrolledCourses->contains($course->id)) {
             return redirect()->route('student.courses')->with('error', 'Вы не записаны на этот курс');
         }
 
+        // Загружаем все уроки курса
+        $course->load(['lessons' => function($query) {
+            $query->orderBy('position');
+        }]);
+
+        // Если передан ID урока, загружаем этот урок
+        $lesson = null;
+        $prevLesson = null;
+        $nextLesson = null;
+
+        if ($request->has('lesson')) {
+            $lessonId = $request->query('lesson');
+            $lesson = $course->lessons->where('id', $lessonId)->first();
+
+            // Если урок найден, находим предыдущий и следующий уроки
+            if ($lesson) {
+                $currentIndex = $course->lessons->search(function($item) use ($lesson) {
+                    return $item->id === $lesson->id;
+                });
+
+                $prevLesson = $currentIndex > 0 ? $course->lessons[$currentIndex - 1] : null;
+                $nextLesson = $currentIndex < $course->lessons->count() - 1 ? $course->lessons[$currentIndex + 1] : null;
+            }
+        }
+
         return view('student.courses.study', [
-            'course' => $course
+            'course' => $course,
+            'lesson' => $lesson,
+            'prevLesson' => $prevLesson,
+            'nextLesson' => $nextLesson
         ]);
     }
 
