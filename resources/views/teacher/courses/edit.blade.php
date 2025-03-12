@@ -86,11 +86,13 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="flex items-center">
-                            <input type="checkbox" name="is_published" {{ $course->is_published ? 'checked' : '' }} class="mr-2">
-                            <span class="text-gray-700">Опубликовать курс</span>
-                        </label>
-                        <p class="text-sm text-gray-500 mt-1">Опубликованные курсы видны всем пользователям</p>
+                        <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Статус курса</label>
+                        <select name="status" id="status" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="draft" {{ (old('status', $course->status) == 'draft') ? 'selected' : '' }}>Черновик</option>
+                            <option value="published" {{ (old('status', $course->status) == 'published') ? 'selected' : '' }}>Опубликован</option>
+                            <option value="archived" {{ (old('status', $course->status) == 'archived') ? 'selected' : '' }}>В архиве</option>
+                        </select>
+                        <p class="text-sm text-gray-500 mt-1">Опубликованные курсы видны всем пользователям, курсы в архиве скрыты</p>
                     </div>
 
                     <div class="flex items-center justify-end mt-8">
@@ -118,8 +120,11 @@
                     </div>
                     <div class="border rounded-lg p-4">
                         <h3 class="text-lg font-medium text-gray-900">Статус</h3>
-                        <p class="text-xl font-bold {{ $course->is_published ? 'text-green-600' : 'text-yellow-600' }}">
-                            {{ $course->is_published ? 'Опубликован' : 'Черновик' }}
+                        <p class="text-xl font-bold
+                            {{ $course->status === 'published' ? 'text-green-600' :
+                              ($course->status === 'archived' ? 'text-gray-600' : 'text-yellow-600') }}">
+                            {{ $course->status === 'published' ? 'Опубликован' :
+                              ($course->status === 'archived' ? 'В архиве' : 'Черновик') }}
                         </p>
                     </div>
                 </div>

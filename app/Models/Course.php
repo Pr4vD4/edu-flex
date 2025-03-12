@@ -16,13 +16,41 @@ class Course extends Model
         'image',
         'teacher_id',
         'is_published',
+        'status',
         'price',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
         'price' => 'float',
+        'status' => 'string',
     ];
+
+    /**
+     * Мутатор для поля is_published - автоматически обновляет status
+     */
+    public function setIsPublishedAttribute($value)
+    {
+        $this->attributes['is_published'] = $value;
+
+        // Если is_published меняется, синхронизируем status
+        if ($value) {
+            $this->attributes['status'] = 'published';
+        } elseif (isset($this->attributes['status']) && $this->attributes['status'] === 'published') {
+            $this->attributes['status'] = 'draft';
+        }
+    }
+
+    /**
+     * Мутатор для поля status - автоматически обновляет is_published
+     */
+    public function setStatusAttribute($value)
+    {
+        $this->attributes['status'] = $value;
+
+        // Если status меняется, синхронизируем is_published
+        $this->attributes['is_published'] = ($value === 'published');
+    }
 
     /**
      * Преподаватель курса

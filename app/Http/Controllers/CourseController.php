@@ -209,8 +209,11 @@ class CourseController extends Controller
             abort(403);
         }
 
+        $categories = \App\Models\Category::where('is_active', true)->get();
+
         return view('teacher.courses.edit', [
-            'course' => $course
+            'course' => $course,
+            'categories' => $categories
         ]);
     }
 
@@ -230,12 +233,12 @@ class CourseController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'is_published' => 'boolean',
+            'status' => 'required|in:draft,published,archived',
         ]);
 
         $course->title = $request->title;
         $course->description = $request->description;
-        $course->is_published = $request->has('is_published');
+        $course->status = $request->status;
         $course->price = $request->price;
         $course->category_id = $request->category_id;
 
@@ -294,7 +297,7 @@ class CourseController extends Controller
                 ->with('error', 'Для публикации курса необходимо добавить хотя бы один урок.');
         }
 
-        $course->is_published = true;
+        $course->status = 'published';
         $course->save();
 
         return redirect()->route('teacher.courses.show', $course)
@@ -311,7 +314,7 @@ class CourseController extends Controller
             abort(403);
         }
 
-        $course->is_published = false;
+        $course->status = 'draft';
         $course->save();
 
         return redirect()->route('teacher.courses.show', $course)
