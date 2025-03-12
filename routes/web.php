@@ -11,6 +11,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,7 +73,7 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::get('/courses', [CourseController::class, 'teacherCourses'])->name('courses.index');
     Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
     Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
-    Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+    Route::get('/courses/{course}', [CourseController::class, 'teacherShow'])->name('courses.show');
     Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
     Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
     Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
@@ -92,6 +93,13 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
 
     // Маршруты для управления студентами курсов
     Route::get('/courses/{course}/students', [CourseController::class, 'students'])->name('courses.students');
+
+    // Маршруты для управления категориями (доступны для преподавателей)
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
 // Маршруты для студента
@@ -120,4 +128,15 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/profile/password', [ProfileController::class, 'editPassword'])->name('profile.password');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+});
+
+// Маршруты для категорий
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
+
+// Маршруты для управления категориями (доступны только для админа)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
 });

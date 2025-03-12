@@ -12,7 +12,7 @@
                 <a href="{{ route('teacher.courses.lessons.index', $course) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                     Управление уроками
                 </a>
-                <a href="{{ route('teacher.courses') }}" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                <a href="{{ route('teacher.courses.index') }}" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
                     Назад к курсам
                 </a>
             </div>
@@ -70,6 +70,19 @@
                         <label for="price" class="block text-gray-700 text-sm font-bold mb-2">Цена курса (руб.)</label>
                         <input type="number" name="price" id="price" min="0" step="0.01" value="{{ old('price', $course->price) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <p class="text-sm text-gray-500 mt-1">Оставьте 0 для бесплатного курса</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="category_id" class="block text-gray-700 text-sm font-bold mb-2">Категория</label>
+                        <select name="category_id" id="category_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Выберите категорию</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ (old('category_id', $course->category_id) == $category->id) ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <p class="text-sm text-gray-500 mt-1">Выберите категорию для курса</p>
                     </div>
 
                     <div class="mb-4">

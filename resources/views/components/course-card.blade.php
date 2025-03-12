@@ -12,7 +12,7 @@
 
         <div class="absolute top-4 left-4">
             <span class="px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded-md shadow-sm">
-                {{ $course->category->name }}
+                {{ $course->category ? $course->category->name : 'Без категории' }}
             </span>
         </div>
 
@@ -32,10 +32,10 @@
 
         <div class="flex items-center mb-4">
             <div class="flex-shrink-0 mr-3">
-                <img class="h-8 w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($course->teacher->name) }}&color=7F9CF5&background=EBF4FF" alt="{{ $course->teacher->name }}">
+                <img class="h-8 w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($course->teacher ? $course->teacher->name : 'Unknown') }}&color=7F9CF5&background=EBF4FF" alt="{{ $course->teacher ? $course->teacher->name : 'Unknown' }}">
             </div>
             <div>
-                <p class="text-sm font-medium text-gray-900">{{ $course->teacher->name }}</p>
+                <p class="text-sm font-medium text-gray-900">{{ $course->teacher ? $course->teacher->name : 'Неизвестный преподаватель' }}</p>
                 <p class="text-xs text-gray-500">Преподаватель</p>
             </div>
         </div>
@@ -47,7 +47,7 @@
             </div>
             <div class="flex items-center">
                 <img src="{{ asset('img/icons/users.svg') }}" alt="Students" class="h-4 w-4 mr-1 text-gray-400">
-                <span>{{ $course->students_count }} студентов</span>
+                <span>{{ $course->students_count ?? 0 }} студентов</span>
             </div>
         </div>
 
@@ -60,7 +60,7 @@
                 @endif
             </div>
 
-            <a href="{{ route('courses.show', $course) }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
+            <a href="{{ route('courses.show', $course->slug) }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
                 Подробнее
                 <img src="{{ asset('img/icons/arrow-right.svg') }}" alt="Arrow" class="h-4 w-4 ml-1">
             </a>

@@ -15,12 +15,19 @@
                 </a>
 
                 <span class="px-3 py-1 text-xs bg-blue-500 text-white rounded-full mb-4 inline-block">
-                    {{ $course->category->name }}
+                    @if($course->category)
+                    <a href="{{ route('categories.show', $course->category->slug) }}" class="text-white hover:text-blue-100">
+                        {{ $course->category->name }}
+                    </a>
+                    @else
+                    <span class="text-white">Без категории</span>
+                    @endif
                 </span>
 
                 <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">{{ $course->title }}</h1>
 
                 <div class="flex items-center mb-6">
+                    @if($course->teacher)
                     <div class="flex-shrink-0 mr-3">
                         <img class="h-10 w-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($course->teacher->name) }}&color=7F9CF5&background=EBF4FF" alt="{{ $course->teacher->name }}">
                     </div>
@@ -28,6 +35,15 @@
                         <p class="text-sm font-medium text-white">{{ $course->teacher->name }}</p>
                         <p class="text-xs text-blue-100">Преподаватель</p>
                     </div>
+                    @else
+                    <div class="flex-shrink-0 mr-3">
+                        <img class="h-10 w-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name=Unknown&color=7F9CF5&background=EBF4FF" alt="Неизвестный преподаватель">
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-white">Неизвестный преподаватель</p>
+                        <p class="text-xs text-blue-100">Преподаватель</p>
+                    </div>
+                    @endif
                 </div>
 
                 <div class="flex flex-wrap gap-4 mb-6">
@@ -279,11 +295,19 @@
                 <h3 class="text-xl font-bold mb-4">О преподавателе</h3>
 
                 <div class="flex items-center mb-4">
+                    @if($course->teacher)
                     <img class="h-16 w-16 rounded-full object-cover mr-4" src="https://ui-avatars.com/api/?name={{ urlencode($course->teacher->name) }}&color=7F9CF5&background=EBF4FF" alt="{{ $course->teacher->name }}">
                     <div>
                         <p class="font-medium text-lg">{{ $course->teacher->name }}</p>
                         <p class="text-sm text-gray-500">Эксперт в области IT</p>
                     </div>
+                    @else
+                    <img class="h-16 w-16 rounded-full object-cover mr-4" src="https://ui-avatars.com/api/?name=Unknown&color=7F9CF5&background=EBF4FF" alt="Неизвестный преподаватель">
+                    <div>
+                        <p class="font-medium text-lg">Неизвестный преподаватель</p>
+                        <p class="text-sm text-gray-500">Эксперт в области IT</p>
+                    </div>
+                    @endif
                 </div>
 
                 <p class="text-gray-600 mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
@@ -328,7 +352,7 @@
                             </div>
                             <div>
                                 <h4 class="font-medium text-gray-900 hover:text-blue-600 transition">Похожий курс {{ $i }}</h4>
-                                <p class="text-sm text-gray-500 mb-1">{{ $course->category->name }}</p>
+                                <p class="text-sm text-gray-500 mb-1">{{ $course->category ? $course->category->name : 'Без категории' }}</p>
                                 <div class="flex items-center text-sm">
                                     <span class="font-medium text-blue-600 mr-2">{{ rand(1000, 5000) }} ₽</span>
                                     <div class="flex">

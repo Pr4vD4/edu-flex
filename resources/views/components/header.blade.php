@@ -13,6 +13,7 @@
             <nav class="hidden md:flex items-center space-x-1" x-data="{ open: false }">
                 <a href="{{ auth()->check() ? route('home') : route('welcome') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Главная</a>
                 <a href="{{ route('courses.index') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Курсы</a>
+                <a href="{{ route('categories.index') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Категории</a>
                 <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Преподаватели</a>
                 <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">Блог</a>
                 <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition">О нас</a>
@@ -49,9 +50,18 @@
                             <a href="{{ route('profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 Мой профиль
                             </a>
-                            <a href="{{ route('student.courses') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                Мои курсы
-                            </a>
+
+                            @if(auth()->user()->role === 'teacher')
+                                <a href="{{ route('teacher.courses.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Мои курсы</a>
+                                <a href="{{ route('teacher.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Панель преподавателя</a>
+                                <a href="{{ route('teacher.categories.create') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Создать категорию</a>
+                            @elseif(auth()->user()->role === 'student')
+                                <a href="{{ route('student.courses') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Мои курсы</a>
+                                <a href="{{ route('student.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Панель студента</a>
+                            @elseif(auth()->user()->role === 'admin')
+                                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Панель администратора</a>
+                            @endif
+
                             <div class="border-t border-gray-100"></div>
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
@@ -87,6 +97,7 @@
                             <div class="space-y-2">
                                 <a href="{{ auth()->check() ? route('home') : route('welcome') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Главная</a>
                                 <a href="{{ route('courses.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Курсы</a>
+                                <a href="{{ route('categories.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Категории</a>
                                 <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Преподаватели</a>
                                 <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Блог</a>
                                 <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">О нас</a>
@@ -98,7 +109,18 @@
                                     <a href="{{ route('register') }}" class="block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-center">Регистрация</a>
                                 @else
                                     <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Мой профиль</a>
-                                    <a href="{{ route('student.courses') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Мои курсы</a>
+
+                                    @if(auth()->user()->role === 'teacher')
+                                        <a href="{{ route('teacher.courses.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Мои курсы</a>
+                                        <a href="{{ route('teacher.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Панель преподавателя</a>
+                                        <a href="{{ route('teacher.categories.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Создать категорию</a>
+                                    @elseif(auth()->user()->role === 'student')
+                                        <a href="{{ route('student.courses') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Мои курсы</a>
+                                        <a href="{{ route('student.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Панель студента</a>
+                                    @elseif(auth()->user()->role === 'admin')
+                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Панель администратора</a>
+                                    @endif
+
                                     <form action="{{ route('logout') }}" method="POST">
                                         @csrf
                                         <button type="submit" class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Выйти</button>

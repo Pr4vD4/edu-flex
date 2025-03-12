@@ -43,8 +43,21 @@
                     <p class="text-sm text-gray-500 mt-1">Оставьте 0 для бесплатного курса</p>
                 </div>
 
+                <div class="mb-4">
+                    <label for="category_id" class="block text-gray-700 text-sm font-bold mb-2">Категория</label>
+                    <select name="category_id" id="category_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Выберите категорию</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="text-sm text-gray-500 mt-1">Выберите категорию для курса</p>
+                </div>
+
                 <div class="flex items-center justify-between mt-8">
-                    <a href="{{ route('teacher.courses') }}" class="text-gray-600 hover:text-gray-900">
+                    <a href="{{ route('teacher.courses.index') }}" class="text-gray-600 hover:text-gray-900">
                         Отмена
                     </a>
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">

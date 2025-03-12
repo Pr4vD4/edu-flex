@@ -28,7 +28,11 @@
                         @foreach($categories as $category)
                             <label class="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer">
                                 <input type="radio" name="category" value="{{ $category->id }}" class="mr-2" x-model="categoryFilter">
-                                <span>{{ $category->name }}</span>
+                                <span>
+                                    <a href="{{ route('categories.show', $category->slug) }}" class="hover:text-blue-600">
+                                        {{ $category->name }}
+                                    </a>
+                                </span>
                             </label>
                         @endforeach
                     </div>

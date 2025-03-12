@@ -35,7 +35,7 @@
                     </p>
                     <div class="pt-4 flex flex-wrap gap-4 justify-center md:justify-start">
                         @if(Auth::user()->role === 'teacher')
-                            <a href="{{ route('teacher.courses') }}" class="px-6 py-3 bg-white text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition shadow-md">
+                            <a href="{{ route('teacher.courses.index') }}" class="px-6 py-3 bg-white text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition shadow-md">
                                 Мои курсы
                             </a>
                             <a href="{{ route('teacher.dashboard') }}" class="px-6 py-3 bg-transparent border border-white text-white font-medium rounded-lg hover:bg-white/10 transition">
@@ -140,7 +140,7 @@
                         </svg>
                         Создать курс
                     </a>
-                    <a href="{{ route('teacher.courses') }}" class="hidden md:flex items-center text-blue-600 hover:text-blue-800 transition">
+                    <a href="{{ route('teacher.courses.index') }}" class="hidden md:flex items-center text-blue-600 hover:text-blue-800 transition">
                         Все мои курсы
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />

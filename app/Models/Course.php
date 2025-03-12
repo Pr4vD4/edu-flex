@@ -81,4 +81,12 @@ class Course extends Model
     {
         return $this->hasMany(Certificate::class);
     }
+
+    /**
+     * Категория курса
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

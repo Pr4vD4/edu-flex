@@ -20,8 +20,11 @@ class CourseController extends Controller
             ->latest()
             ->paginate(12);
 
+        $categories = Category::orderBy('name')->get();
+
         return view('courses.index', [
-            'courses' => $courses
+            'courses' => $courses,
+            'categories' => $categories
         ]);
     }
 
@@ -34,6 +37,9 @@ class CourseController extends Controller
         if (!$course->is_published && (auth()->guest() || auth()->user()->id !== $course->teacher_id)) {
             abort(404);
         }
+
+        // Загружаем связанные данные
+        $course->load(['teacher', 'category', 'lessons']);
 
         return view('courses.show', [
             'course' => $course
@@ -103,7 +109,7 @@ class CourseController extends Controller
     /**
      * Показывает детальную информацию о курсе для преподавателя
      */
-    public function show(Course $course)
+    public function teacherShow(Course $course)
     {
         // Проверка, что курс принадлежит преподавателю
         if ($course->teacher_id !== Auth::id()) {
@@ -124,7 +130,10 @@ class CourseController extends Controller
      */
     public function create()
     {
-        return view('teacher.courses.create');
+        $categories = Category::orderBy('name')->get();
+        return view('teacher.courses.create', [
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -136,6 +145,8 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
         $course = new Course();
@@ -144,6 +155,8 @@ class CourseController extends Controller
         $course->description = $request->description;
         $course->teacher_id = Auth::id();
         $course->is_published = false;
+        $course->price = $request->price;
+        $course->category_id = $request->category_id;
 
         // Обработка изображения (если загружено)
         if ($request->hasFile('image')) {
@@ -188,6 +201,7 @@ class CourseController extends Controller
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
             'is_published' => 'boolean',
         ]);
 
@@ -195,6 +209,7 @@ class CourseController extends Controller
         $course->description = $request->description;
         $course->is_published = $request->has('is_published');
         $course->price = $request->price;
+        $course->category_id = $request->category_id;
 
         // Обработка изображения (если загружено)
         if ($request->hasFile('image')) {
